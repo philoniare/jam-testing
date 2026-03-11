@@ -1,0 +1,14 @@
+name: "Picofuzz: jamforge"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: jamforge
+      docker_image: 'ghcr.io/philoniare/jam-forge:latest'
+      docker_cmd: '--socket-path {TARGET_SOCK}'

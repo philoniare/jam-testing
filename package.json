@@ -1,0 +1,36 @@
+{
+  "name": "@fluffylabs/jam-testing",
+  "version": "0.1.0",
+  "description": "JAM implementation performance testing",
+  "main": "index.js",
+  "type": "module",
+  "workspaces": [
+    "./picofuzz",
+    "./tests"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "qa-fix": "npm run format && npm run lint",
+    "qa": "biome ci",
+    "format": "biome format --write",
+    "lint": "biome check --write && biome lint --write",
+    "test": "tsx --test $(find . -type d -name node_modules -prune -type f -o -name '*.test.ts' | tr '\\n' ' ')"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FluffyLabs/jam-testing.git"
+  },
+  "author": "Fluffy Labs",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/FluffyLabs/jam-testing/issues"
+  },
+  "homepage": "https://github.com/FluffyLabs/jam-testing#readme",
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6",
+    "@tsconfig/node20": "20.1.4",
+    "@types/node": "^24.5.2",
+    "tsx": "4.19.4",
+    "typescript": "5.6.3"
+  }
+}

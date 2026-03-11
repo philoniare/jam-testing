@@ -1,0 +1,141 @@
+name: "Reusable Picofuzz"
+
+on:
+  workflow_call:
+    inputs:
+      target_name:
+        required: true
+        type: string
+        description: "Implementation name (e.g. typeberry)"
+      docker_image:
+        required: true
+        type: string
+        description: "Full Docker image reference"
+      docker_cmd:
+        required: true
+        type: string
+        description: "Base command with {TARGET_SOCK} placeholder"
+      docker_cmd_conformance:
+        required: false
+        type: string
+        default: ""
+        description: "Override cmd for conformance suite (if empty, uses docker_cmd)"
+      docker_env:
+        required: false
+        type: string
+        default: ""
+        description: "Space-separated KEY=VALUE pairs"
+      docker_memory:
+        required: false
+        type: string
+        default: "512m"
+        description: "Docker memory limit"
+      docker_platform:
+        required: false
+        type: string
+        default: "linux/amd64"
+        description: "Platform flag for docker pull"
+      readiness_pattern:
+        required: false
+        type: string
+        default: ""
+        description: "Regex for log-based readiness (if empty, uses socket probe)"
+      timeout_minutes:
+        required: false
+        type: number
+        default: 10
+        description: "Per-suite timeout in minutes"
+      max_wait_minutes:
+        required: false
+        type: number
+        default: 120
+        description: "Max time to wait for runner before failing"
+      test_suites:
+        required: false
+        type: string
+        default: '["fallback","safrole","storage","storage_light","conformance"]'
+        description: "JSON array of test suite names"
+
+jobs:
+  init:
+    name: "Init (${{ inputs.target_name }})"
+    runs-on: [self-hosted, perf]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pull target Docker image
+        run: docker pull --platform=${{ inputs.docker_platform }} ${{ inputs.docker_image }}
+
+      - name: Build picofuzz Docker image
+        run: npm run build-docker -w @fluffylabs/picofuzz
+
+  picofuzz:
+    needs: init
+    name: "Picofuzz ${{ matrix.test }} (${{ inputs.target_name }})"
+    runs-on: [self-hosted, perf]
+    timeout-minutes: ${{ inputs.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test: ${{ fromJson(inputs.test_suites) }}
+
+    steps:
+      - name: Check wait time
+        run: |
+          RUN_CREATED=$(gh run view ${{ github.run_id }} --json createdAt -q '.createdAt')
+          CREATED_TS=$(date -d "$RUN_CREATED" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$RUN_CREATED" +%s)
+          NOW_TS=$(date +%s)
+          WAITED=$(( (NOW_TS - CREATED_TS) / 60 ))
+          echo "Waited ${WAITED} minutes for runner"
+          if [ "$WAITED" -gt "${{ inputs.max_wait_minutes }}" ]; then
+            echo "::error::Exceeded max wait time of ${{ inputs.max_wait_minutes }} minutes (waited ${WAITED}m). Failing."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare result directory
+        run: mkdir -p ./picofuzz-result && chmod 777 ./picofuzz-result
+
+      - name: Run picofuzz ${{ matrix.test }}
+        run: npm exec tsx -- --test tests/picofuzz/${{ matrix.test }}.test.ts
+        env:
+          TARGET_NAME: ${{ inputs.target_name }}
+          TARGET_IMAGE: ${{ inputs.docker_image }}
+          TARGET_CMD: ${{ inputs.docker_cmd }}
+          TARGET_CMD_CONFORMANCE: ${{ inputs.docker_cmd_conformance }}
+          TARGET_ENV: ${{ inputs.docker_env }}
+          TARGET_READINESS_PATTERN: ${{ inputs.readiness_pattern }}
+          TARGET_MEMORY: ${{ inputs.docker_memory }}
+
+      - name: Upload CSV results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: picofuzz-csv-${{ inputs.target_name }}-${{ matrix.test }}
+          path: ./picofuzz-result/${{ matrix.test }}.csv
+          retention-days: 90

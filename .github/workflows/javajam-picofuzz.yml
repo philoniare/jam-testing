@@ -1,0 +1,14 @@
+name: "Picofuzz: javajam"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: javajam
+      docker_image: 'ghcr.io/methodfive/javajam:latest-amd64'
+      docker_cmd: '-Dskip.warmup=true fuzz {TARGET_SOCK}'

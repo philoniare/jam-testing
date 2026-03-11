@@ -1,0 +1,17 @@
+name: "Picofuzz: typeberry"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: typeberry
+      docker_image: 'ghcr.io/fluffylabs/typeberry:latest'
+      docker_cmd: '--version=1 fuzz-target {TARGET_SOCK}'
+      docker_cmd_conformance: '--version=1 fuzz-target --init-genesis-from-ancestry {TARGET_SOCK}'
+      docker_env: 'JAM_LOG=log'
+      readiness_pattern: 'PVM Backend'

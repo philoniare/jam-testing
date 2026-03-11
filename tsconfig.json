@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "es2023",
+    "outDir": "dist/",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "exclude": ["dist", "node_modules"]
+}

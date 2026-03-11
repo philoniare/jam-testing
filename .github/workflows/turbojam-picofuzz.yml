@@ -1,0 +1,14 @@
+name: "Picofuzz: turbojam"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: turbojam
+      docker_image: 'r2rationality/turbojam-fuzz:latest'
+      docker_cmd: 'fuzzer-api {TARGET_SOCK}'

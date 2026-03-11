@@ -1,0 +1,14 @@
+name: "Picofuzz: boka"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: boka
+      docker_image: 'acala/boka:latest'
+      docker_cmd: 'fuzz target --socket-path {TARGET_SOCK}'

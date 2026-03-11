@@ -1,0 +1,14 @@
+name: "Picofuzz: pyjamaz"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: pyjamaz
+      docker_image: 'jamdottech/pyjamaz:latest'
+      docker_cmd: 'fuzzer target --db-path=/tmp/pyjamaz_fuzzer_db --socket-path={TARGET_SOCK}'

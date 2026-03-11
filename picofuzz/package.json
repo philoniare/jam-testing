@@ -1,0 +1,20 @@
+{
+  "name": "@fluffylabs/picofuzz",
+  "version": "0.0.1",
+  "description": "Send prepared fuzz messages using Fuzz protocol and collect some statistics.",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx ./index.ts",
+    "prepare-data": "../picofuzz-stf-data/populate.sh",
+    "build-docker": "cp ../package-lock.json . && docker build -t picofuzz .",
+    "test": "tsx --test $(find . -type d -name node_modules -prune -type f -o -name '*.test.ts' | tr '\\n' ' ')"
+  },
+  "author": "Fluffy Labs",
+  "license": "MPL-2.0",
+  "type": "module",
+  "dependencies": {
+    "@typeberry/lib": "^0.5.4",
+    "@types/minimist": "^1.2.5",
+    "minimist": "^1.2.8"
+  }
+}

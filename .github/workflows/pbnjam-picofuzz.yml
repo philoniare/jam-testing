@@ -1,0 +1,14 @@
+name: "Picofuzz: pbnjam"
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable-picofuzz.yml
+    with:
+      target_name: pbnjam
+      docker_image: 'shimonchick/pbnjam-fuzzer-target:latest'
+      docker_cmd: '--socket {TARGET_SOCK}'
