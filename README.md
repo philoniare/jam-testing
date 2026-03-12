@@ -1,20 +1,36 @@
 # jam-testing
 
 Performance and smoke testing suite for JAM implementations.
-Each team provides a Docker image, and the suite runs [picofuzz](./picofuzz/)
-traces against it, collecting per-trace timing statistics.
+Each team provides a Docker image, and the suite runs [minifuzz](./minifuzz/)
+conformance examples and [picofuzz](./picofuzz/) traces against it,
+collecting per-trace timing statistics.
 
-Currently covers: **typeberry**, **pyjamaz**, **javajam**, **boka**, **turbojam**,
-**graymatter**, **jamforge**, **jam4s**, **pbnjam**.
+## Conformance status
+
+| Team | Status |
+|------|--------|
+| typeberry | [![Picofuzz: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-picofuzz.yml) |
+| pyjamaz | [![Picofuzz: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-picofuzz.yml) |
+| boka | [![Picofuzz: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-picofuzz.yml) |
+| turbojam | [![Picofuzz: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-picofuzz.yml) |
+| graymatter | [![Picofuzz: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-picofuzz.yml) |
+| jam4s | [![Picofuzz: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-picofuzz.yml) |
+| pbnjam | [![Picofuzz: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-picofuzz.yml) |
+| javajam | [![Picofuzz: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-picofuzz.yml) |
+| jamforge | [![Picofuzz: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-picofuzz.yml) |
 
 ## How it works
 
 1. A **reusable GitHub Actions workflow** pulls your Docker image, starts it
-   with a shared Unix socket volume, and runs picofuzz test suites against it.
-2. Each team has its own workflow file (e.g. `typeberry-picofuzz.yml`) that
+   with a shared Unix socket volume, and runs tests against it.
+2. **Minifuzz** runs first as a gate — it replays pre-constructed fuzz protocol
+   examples (forks and no_forks) and validates responses. If minifuzz fails,
+   picofuzz is skipped entirely.
+3. **Picofuzz** runs the full test suites with detailed timing measurements.
+4. Each team has its own workflow file (e.g. `typeberry-picofuzz.yml`) that
    passes team-specific config (image, command, env vars, memory) to the
    reusable workflow.
-3. Tests run on a self-hosted runner. Results (CSV with per-trace timing
+5. Tests run on a self-hosted runner. Results (CSV with per-trace timing
    percentiles) are uploaded as artifacts.
 
 ### Test suites
@@ -129,14 +145,18 @@ npx tsx --test tests/picofuzz/fallback.test.ts
 
 ```
 .github/workflows/
-  reusable-picofuzz.yml       # Core reusable workflow
+  reusable-picofuzz.yml       # Core reusable workflow (minifuzz + picofuzz)
   <team>-picofuzz.yml         # Per-team workflow files
+minifuzz/                     # Minifuzz Docker image (Python fuzz example runner)
 picofuzz/                     # Picofuzz tool (fuzz protocol client)
 tests/
   common.ts                   # Target startup & shared helpers
   external-process.ts         # Docker process management
+  minifuzz/
+    common.ts                 # Minifuzz test harness
+    *.test.ts                 # Minifuzz test suites (forks, no_forks)
   picofuzz/
-    common.ts                 # Test harness
+    common.ts                 # Picofuzz test harness
     *.test.ts                 # Per-suite test files
 teams/<team>/                 # Team-specific scripts & data
 picofuzz-stf-data/            # Git submodule: STF test traces
