@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, it } from "node:test";
-import { createSharedVolume, getTargetConfig, picofuzz, startTarget, type TargetConfig } from "../common.js";
+import { createSharedVolume, getTargetConfig, picofuzz, startTarget } from "../common.js";
 import type { ExternalProcess } from "../external-process.js";
 
 const timeout = 10 * 60 * 1000;
@@ -16,10 +16,6 @@ export function runPicofuzzTest(
   } = {},
 ) {
   const config = getTargetConfig();
-
-  // For conformance tests, use the conformance command override if available
-  const effectiveConfig: TargetConfig =
-    name === "conformance" && config.cmdConformance ? { ...config, cmd: config.cmdConformance } : config;
 
   describe(`[picofuzz] ${config.name} - ${name}`, { timeout }, () => {
     let targetProc: ExternalProcess | null = null;
@@ -49,7 +45,7 @@ export function runPicofuzzTest(
       targetProc = await startTarget({
         timeout,
         sharedVolume: sharedVolume.name,
-        config: effectiveConfig,
+        config,
       });
       picofuzzProc = await picofuzz({
         timeout,

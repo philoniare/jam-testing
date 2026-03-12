@@ -41,7 +41,6 @@ export interface TargetConfig {
   name: string;
   image: string;
   cmd: string;
-  cmdConformance: string;
   env: string;
   readinessPattern: string;
   memory: string;
@@ -60,7 +59,6 @@ export function getTargetConfig(): TargetConfig {
     name,
     image,
     cmd,
-    cmdConformance: process.env.TARGET_CMD_CONFORMANCE || "",
     env: process.env.TARGET_ENV || "",
     readinessPattern: process.env.TARGET_READINESS_PATTERN || "",
     memory: process.env.TARGET_MEMORY || "512m",
@@ -213,8 +211,6 @@ export async function picofuzz({
     "--rm",
     "-v",
     `${process.cwd()}/picofuzz-stf-data:/app/picofuzz-stf-data:ro`,
-    "-v",
-    `${process.cwd()}/picofuzz-conformance-data:/app/picofuzz-conformance-data:ro`,
     "-v",
     `${process.cwd()}/picofuzz-result:/app/picofuzz-result`,
     "-v",

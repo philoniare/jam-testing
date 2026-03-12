@@ -14,7 +14,6 @@ describe("getTargetConfig", () => {
     process.env.TARGET_NAME = "testteam";
     process.env.TARGET_IMAGE = "some/image:latest";
     process.env.TARGET_CMD = "fuzz {TARGET_SOCK}";
-    process.env.TARGET_CMD_CONFORMANCE = "fuzz --conformance {TARGET_SOCK}";
     process.env.TARGET_ENV = "FOO=bar BAZ=qux";
     process.env.TARGET_MEMORY = "1024m";
     process.env.TARGET_READINESS_PATTERN = "Ready";
@@ -23,7 +22,6 @@ describe("getTargetConfig", () => {
     assert.strictEqual(config.name, "testteam");
     assert.strictEqual(config.image, "some/image:latest");
     assert.strictEqual(config.cmd, "fuzz {TARGET_SOCK}");
-    assert.strictEqual(config.cmdConformance, "fuzz --conformance {TARGET_SOCK}");
     assert.strictEqual(config.env, "FOO=bar BAZ=qux");
     assert.strictEqual(config.memory, "1024m");
     assert.strictEqual(config.readinessPattern, "Ready");
@@ -33,13 +31,11 @@ describe("getTargetConfig", () => {
     process.env.TARGET_NAME = "minimal";
     process.env.TARGET_IMAGE = "img:v1";
     process.env.TARGET_CMD = "run {TARGET_SOCK}";
-    delete process.env.TARGET_CMD_CONFORMANCE;
     delete process.env.TARGET_ENV;
     delete process.env.TARGET_MEMORY;
     delete process.env.TARGET_READINESS_PATTERN;
 
     const config = getTargetConfig();
-    assert.strictEqual(config.cmdConformance, "");
     assert.strictEqual(config.env, "");
     assert.strictEqual(config.memory, "512m");
     assert.strictEqual(config.readinessPattern, "");

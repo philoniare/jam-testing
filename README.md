@@ -5,7 +5,7 @@ Each team provides a Docker image, and the suite runs [minifuzz](./minifuzz/)
 conformance examples and [picofuzz](./picofuzz/) traces against it,
 collecting per-trace timing statistics.
 
-## Conformance status
+## Minifuzz + Performance
 
 | Team | Status |
 |------|--------|
@@ -41,8 +41,6 @@ collecting per-trace timing statistics.
 | `safrole` | `picofuzz-stf-data` | Safrole STF traces |
 | `storage` | `picofuzz-stf-data` | Storage STF traces |
 | `storage_light` | `picofuzz-stf-data` | Lightweight storage traces |
-| `conformance` | `picofuzz-conformance-data` | Cross-implementation conformance traces |
-
 ### Readiness detection
 
 The suite needs to know when your implementation is ready to accept
@@ -77,7 +75,6 @@ connections on the Unix socket. Two modes are supported:
          docker_image: 'ghcr.io/myorg/myimage:latest'
          docker_cmd: 'fuzz --socket {TARGET_SOCK}'
          # Optional overrides:
-         # docker_cmd_conformance: 'fuzz --conformance --socket {TARGET_SOCK}'
          # docker_env: 'MY_VAR=value'
          # docker_memory: '512m'
          # docker_platform: 'linux/amd64'
@@ -97,7 +94,6 @@ connections on the Unix socket. Two modes are supported:
 | `target_name` | yes | — | Your implementation name |
 | `docker_image` | yes | — | Full image reference |
 | `docker_cmd` | yes | — | Command with `{TARGET_SOCK}` placeholder for the socket path |
-| `docker_cmd_conformance` | no | `""` | Override command for the conformance suite |
 | `docker_env` | no | `""` | Space-separated `KEY=VALUE` pairs passed as `-e` flags |
 | `docker_memory` | no | `"512m"` | Container memory limit |
 | `docker_platform` | no | `"linux/amd64"` | Platform for `docker pull` |
@@ -136,7 +132,6 @@ npx tsx --test tests/picofuzz/fallback.test.ts
 | `TARGET_NAME` | Implementation name |
 | `TARGET_IMAGE` | Docker image to test |
 | `TARGET_CMD` | Container command (`{TARGET_SOCK}` is replaced with the socket path) |
-| `TARGET_CMD_CONFORMANCE` | Optional override for conformance suite |
 | `TARGET_ENV` | Space-separated `KEY=VALUE` pairs |
 | `TARGET_MEMORY` | Container memory limit (default `512m`) |
 | `TARGET_READINESS_PATTERN` | Regex for log-based readiness |

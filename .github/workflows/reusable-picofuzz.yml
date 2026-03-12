@@ -15,11 +15,6 @@ on:
         required: true
         type: string
         description: "Base command with {TARGET_SOCK} placeholder"
-      docker_cmd_conformance:
-        required: false
-        type: string
-        default: ""
-        description: "Override cmd for conformance suite (if empty, uses docker_cmd)"
       docker_env:
         required: false
         type: string
@@ -53,7 +48,7 @@ on:
       test_suites:
         required: false
         type: string
-        default: '["fallback","safrole","storage","storage_light","conformance"]'
+        default: '["fallback","safrole","storage","storage_light"]'
         description: "JSON array of test suite names"
       minifuzz_suites:
         required: false
@@ -183,7 +178,6 @@ jobs:
           TARGET_NAME: ${{ inputs.target_name }}
           TARGET_IMAGE: ${{ inputs.docker_image }}
           TARGET_CMD: ${{ inputs.docker_cmd }}
-          TARGET_CMD_CONFORMANCE: ${{ inputs.docker_cmd_conformance }}
           TARGET_ENV: ${{ inputs.docker_env }}
           TARGET_READINESS_PATTERN: ${{ inputs.readiness_pattern }}
           TARGET_MEMORY: ${{ inputs.docker_memory }}

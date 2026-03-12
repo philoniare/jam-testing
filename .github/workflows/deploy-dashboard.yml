@@ -50,7 +50,7 @@ jobs:
         run: |
           mkdir -p artifacts
           TARGETS="typeberry boka graymatter jam4s jamforge javajam pbnjam pyjamaz turbojam"
-          BENCHMARKS="fallback safrole storage storage_light conformance"
+          BENCHMARKS="fallback safrole storage storage_light"
 
           for target in $TARGETS; do
             for bench in $BENCHMARKS; do
