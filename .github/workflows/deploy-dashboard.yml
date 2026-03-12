@@ -67,7 +67,7 @@ jobs:
 
       - name: Convert CSV to dashboard JSON
         run: |
-          node scripts/csv-to-dashboard-json.js artifacts fuzz-perf
+          node scripts/csv-to-dashboard-json.cjs artifacts fuzz-perf
 
       - name: Install dashboard dependencies
         working-directory: dashboard
