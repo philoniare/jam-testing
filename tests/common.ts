@@ -159,6 +159,38 @@ export async function startTarget({
   return proc;
 }
 
+export async function minifuzz({
+  dir,
+  stopAfter = 1000,
+  sharedVolume = SHARED_VOLUME,
+  timeout,
+}: {
+  dir: string;
+  stopAfter?: number;
+  sharedVolume?: string;
+  timeout: number;
+}) {
+  return ExternalProcess.spawn(
+    "minifuzz",
+    "docker",
+    "run",
+    "--rm",
+    "-v",
+    `${process.cwd()}/picofuzz-conformance-data:/app/picofuzz-conformance-data:ro`,
+    "-v",
+    `${sharedVolume}:/shared`,
+    "minifuzz",
+    "--trace-dir",
+    `/app/${dir}`,
+    "--target-sock",
+    SOCKET_PATH,
+    "--stop-after",
+    `${stopAfter}`,
+    "--spec",
+    "tiny",
+  ).terminateAfter(timeout - 10_000);
+}
+
 export async function picofuzz({
   dir,
   repeat = 1,

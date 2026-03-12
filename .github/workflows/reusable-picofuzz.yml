@@ -55,6 +55,11 @@ on:
         type: string
         default: '["fallback","safrole","storage","storage_light","conformance"]'
         description: "JSON array of test suite names"
+      minifuzz_suites:
+        required: false
+        type: string
+        default: '["forks","no_forks"]'
+        description: "JSON array of minifuzz test suite names"
 
 jobs:
   init:
@@ -80,8 +85,59 @@ jobs:
       - name: Build picofuzz Docker image
         run: npm run build-docker -w @fluffylabs/picofuzz
 
-  picofuzz:
+      - name: Build minifuzz Docker image
+        run: npm run build -w @fluffylabs/minifuzz
+
+  minifuzz:
     needs: init
+    name: "Minifuzz ${{ matrix.test }} (${{ inputs.target_name }})"
+    runs-on: [self-hosted, perf]
+    timeout-minutes: ${{ inputs.timeout_minutes }}
+    strategy:
+      fail-fast: true
+      matrix:
+        test: ${{ fromJson(inputs.minifuzz_suites) }}
+
+    steps:
+      - name: Check wait time
+        run: |
+          RUN_CREATED=$(gh run view ${{ github.run_id }} --json createdAt -q '.createdAt')
+          CREATED_TS=$(date -d "$RUN_CREATED" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$RUN_CREATED" +%s)
+          NOW_TS=$(date +%s)
+          WAITED=$(( (NOW_TS - CREATED_TS) / 60 ))
+          echo "Waited ${WAITED} minutes for runner"
+          if [ "$WAITED" -gt "${{ inputs.max_wait_minutes }}" ]; then
+            echo "::error::Exceeded max wait time of ${{ inputs.max_wait_minutes }} minutes (waited ${WAITED}m). Failing."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'recursive'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run minifuzz ${{ matrix.test }}
+        run: npm exec tsx -- --test tests/minifuzz/${{ matrix.test }}.test.ts
+        env:
+          TARGET_NAME: ${{ inputs.target_name }}
+          TARGET_IMAGE: ${{ inputs.docker_image }}
+          TARGET_CMD: ${{ inputs.docker_cmd }}
+          TARGET_ENV: ${{ inputs.docker_env }}
+          TARGET_READINESS_PATTERN: ${{ inputs.readiness_pattern }}
+          TARGET_MEMORY: ${{ inputs.docker_memory }}
+
+  picofuzz:
+    needs: [init, minifuzz]
     name: "Picofuzz ${{ matrix.test }} (${{ inputs.target_name }})"
     runs-on: [self-hosted, perf]
     timeout-minutes: ${{ inputs.timeout_minutes }}

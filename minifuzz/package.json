@@ -1,0 +1,14 @@
+{
+  "name": "@fluffylabs/minifuzz",
+  "version": "1.0.0",
+  "description": "Mini fuzz utils - runs pre-constructed fuzz message examples against target implementations.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "docker run --rm minifuzz",
+    "build": "npm run build-docker",
+    "build-docker": "./minifuzz-docker-build.sh"
+  },
+  "author": "Fluffy Labs",
+  "license": "MPL-2.0"
+}

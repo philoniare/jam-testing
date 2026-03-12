@@ -6,6 +6,7 @@
   "type": "module",
   "workspaces": [
     "./picofuzz",
+    "./minifuzz",
     "./tests"
   ],
   "scripts": {
