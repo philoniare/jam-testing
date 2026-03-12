@@ -4,3 +4,6 @@
 [submodule "picofuzz-conformance-data"]
 	path = picofuzz-conformance-data
 	url = https://github.com/FluffyLabs/picofuzz-conformance-data
+[submodule "dashboard"]
+	path = dashboard
+	url = https://github.com/paritytech/jam-conformance-dashboard.git

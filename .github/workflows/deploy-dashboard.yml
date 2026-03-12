@@ -1,0 +1,112 @@
+name: Deploy Dashboard
+
+on:
+  # Run after any picofuzz workflow completes
+  workflow_run:
+    workflows:
+      - "Picofuzz: typeberry"
+      - "Picofuzz: boka"
+      - "Picofuzz: graymatter"
+      - "Picofuzz: jam4s"
+      - "Picofuzz: jamforge"
+      - "Picofuzz: javajam"
+      - "Picofuzz: pbnjam"
+      - "Picofuzz: pyjamaz"
+      - "Picofuzz: turbojam"
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          submodules: 'recursive'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Download latest picofuzz artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p artifacts
+          TARGETS="typeberry boka graymatter jam4s jamforge javajam pbnjam pyjamaz turbojam"
+          BENCHMARKS="fallback safrole storage storage_light conformance"
+
+          for target in $TARGETS; do
+            for bench in $BENCHMARKS; do
+              ARTIFACT="picofuzz-csv-${target}-${bench}"
+              echo "Downloading ${ARTIFACT}..."
+              gh run download --repo "${{ github.repository }}" \
+                --name "$ARTIFACT" \
+                --dir "artifacts/${ARTIFACT}" 2>/dev/null || echo "  (not found, skipping)"
+            done
+          done
+
+          echo "Downloaded artifacts:"
+          find artifacts -name '*.csv' | sort
+
+      - name: Convert CSV to dashboard JSON
+        run: |
+          node scripts/csv-to-dashboard-json.js artifacts fuzz-perf
+
+      - name: Install dashboard dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Generate dashboard data
+        working-directory: dashboard
+        run: npm run update-all-data
+
+      - name: Write source info
+        working-directory: dashboard
+        run: |
+          node -e "
+            const fs = require('fs');
+            fs.writeFileSync('src/data/source-info.json', JSON.stringify({
+              commit: '${{ github.sha }}',
+              date: new Date().toISOString(),
+              message: 'Picofuzz results from jam-testing',
+              author: 'GitHub Actions'
+            }, null, 2));
+          "
+
+      - name: Patch basePath for this repo
+        working-directory: dashboard
+        run: |
+          REPO_NAME="${{ github.event.repository.name }}"
+          sed -i "s|/jam-conformance-dashboard|/${REPO_NAME}|g" next.config.ts
+
+      - name: Build dashboard
+        working-directory: dashboard
+        env:
+          NODE_ENV: production
+        run: npm run build
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard/out
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
