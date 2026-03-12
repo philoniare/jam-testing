@@ -31,6 +31,11 @@ function parseRow(line) {
   return row;
 }
 
+const REQUIRED_BENCHMARKS = ['safrole', 'fallback', 'storage', 'storage_light'];
+
+// Large penalty value (ms) for missing benchmarks so teams still appear in the UI
+const MISSING_BENCHMARK_MS = 999_999;
+
 function csvRowToJson(row, targetName) {
   // Extract version from peer string like "@typeberry/jam@0.5.9"
   const versionMatch = row.peer.match(/@(\d+\.\d+\.\d+)$/);
@@ -57,6 +62,29 @@ function csvRowToJson(row, targetName) {
       import_p90: nsToMs(row.p90),
       import_p99: nsToMs(row.p99),
       import_std_dev: nsToMs(row.standardDeviation),
+    },
+  };
+}
+
+function makePlaceholderJson(targetName) {
+  return {
+    info: {
+      name: targetName,
+      app_version: { major: 0, minor: 0, patch: 0 },
+      jam_version: { major: 0, minor: 5, patch: 0 },
+    },
+    stats: {
+      steps: 0,
+      imported: 0,
+      import_max_step: 0,
+      import_min: MISSING_BENCHMARK_MS,
+      import_max: MISSING_BENCHMARK_MS,
+      import_mean: MISSING_BENCHMARK_MS,
+      import_p50: MISSING_BENCHMARK_MS,
+      import_p75: MISSING_BENCHMARK_MS,
+      import_p90: MISSING_BENCHMARK_MS,
+      import_p99: MISSING_BENCHMARK_MS,
+      import_std_dev: 0,
     },
   };
 }
@@ -124,7 +152,25 @@ function main() {
     converted++;
   }
 
-  console.log(`\nConverted ${converted} benchmark files to ${versionDir}`);
+  // Fill in missing required benchmarks with placeholder values so
+  // teams with partial results still appear in the dashboard.
+  const teamDirs = fs.existsSync(versionDir)
+    ? fs.readdirSync(versionDir).filter(d => fs.statSync(path.join(versionDir, d)).isDirectory())
+    : [];
+
+  let filled = 0;
+  for (const team of teamDirs) {
+    for (const bench of REQUIRED_BENCHMARKS) {
+      const benchFile = path.join(versionDir, team, `${bench}.json`);
+      if (!fs.existsSync(benchFile)) {
+        fs.writeFileSync(benchFile, JSON.stringify(makePlaceholderJson(team), null, 2));
+        console.log(`  ${team}/${bench}.json (placeholder) ✓`);
+        filled++;
+      }
+    }
+  }
+
+  console.log(`\nConverted ${converted} benchmark files, filled ${filled} placeholders in ${versionDir}`);
 }
 
 main();
