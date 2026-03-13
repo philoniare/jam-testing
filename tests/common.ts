@@ -176,6 +176,8 @@ export async function minifuzz({
     "-v",
     `${process.cwd()}/picofuzz-conformance-data:/app/picofuzz-conformance-data:ro`,
     "-v",
+    `${process.cwd()}/minifuzz-traces:/app/minifuzz-traces:ro`,
+    "-v",
     `${sharedVolume}:/shared`,
     "minifuzz",
     "--trace-dir",

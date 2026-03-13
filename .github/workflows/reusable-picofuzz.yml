@@ -53,7 +53,7 @@ on:
       minifuzz_suites:
         required: false
         type: string
-        default: '["forks","no_forks"]'
+        default: '["forks","no_forks","fallback","safrole","storage","storage_light"]'
         description: "JSON array of minifuzz test suite names"
 
 jobs:
