@@ -73,6 +73,10 @@ async function handleDefaultMode(
   capture: Capture | null,
 ) {
   for (let i = 0; i < repeat; i++) {
+    if (i > 0) {
+      await socket.reconnect();
+      await sendHandshake(spec, socket, null);
+    }
     for (const file of binFiles) {
       const success = await processFile(file, (filePath, fileData) => {
         return handleRequest(spec, socket, stats, filePath, fileData, capture);
@@ -95,6 +99,10 @@ async function handleJamTracesMode(
   capture: Capture | null,
 ) {
   for (let i = 0; i < repeat; i++) {
+    if (i > 0) {
+      await socket.reconnect();
+      await sendHandshake(spec, socket, null);
+    }
     for (let fileIndex = 0; fileIndex < binFiles.length; fileIndex++) {
       const file = binFiles[fileIndex];
       const isFirstFile = fileIndex === 0;

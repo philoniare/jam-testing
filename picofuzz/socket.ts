@@ -25,10 +25,27 @@ export class Socket {
       });
     });
 
-    return new Socket(client);
+    return new Socket(socketPath, client);
   }
 
-  private constructor(private readonly socket: net.Socket) {}
+  private constructor(
+    private readonly socketPath: string,
+    private socket: net.Socket,
+  ) {}
+
+  async reconnect() {
+    this.socket.end();
+    const client = net.createConnection(this.socketPath);
+    await new Promise<void>((resolve, reject) => {
+      client.once("connect", () => {
+        resolve();
+      });
+      client.once("error", () => {
+        reject();
+      });
+    });
+    this.socket = client;
+  }
 
   async send(data: Buffer | Uint8Array): Promise<Buffer> {
     // prepare to read response.
