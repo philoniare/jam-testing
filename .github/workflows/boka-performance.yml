@@ -1,4 +1,4 @@
-name: "Picofuzz: boka"
+name: "Performance: boka"
 
 on:
   schedule:

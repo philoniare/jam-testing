@@ -5,38 +5,43 @@ Each team provides a Docker image that speaks the
 [JAM Fuzz protocol](https://github.com/davxy/jam-conformance/tree/main/fuzz-proto),
 and the suite runs two stages against it:
 
-- **[Minifuzz](./minifuzz/)** — replays pre-constructed protocol examples and
-  validates that the implementation handles the bare minimum features correctly
-  and returns expected responses. Acts as a gate: if minifuzz fails, performance
-  tests are skipped.
-- **[Picofuzz](./picofuzz/)** — sends STF traces at the implementation without
-  checking responses. Its only purpose is to measure block import performance
-  (timings are displayed on the [dashboard](#dashboard)).
+- **[Minifuzz](./minifuzz/)** — runs the bare-minimum `forks`/`no_forks`
+  protocol examples first, then replays STF-based traces for `fallback`,
+  `safrole`, `storage`, and `storage_light` suites and validates that the
+  implementation returns the expected responses. Acts as a gate: if any
+  minifuzz suite fails, performance tests are skipped.
+- **[Picofuzz](./picofuzz/)** — runs the same four STF suites (`fallback`,
+  `safrole`, `storage`, `storage_light`) but does not check responses. Its
+  only purpose is to measure block import performance (timings are displayed
+  on the [dashboard](#dashboard)).
 
 ## Minifuzz + Performance
 
 | Team | Status |
 |------|--------|
-| typeberry | [![Picofuzz: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-picofuzz.yml) |
-| pyjamaz | [![Picofuzz: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-picofuzz.yml) |
-| boka | [![Picofuzz: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-picofuzz.yml) |
-| turbojam | [![Picofuzz: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-picofuzz.yml) |
-| graymatter | [![Picofuzz: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-picofuzz.yml) |
-| jam4s | [![Picofuzz: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-picofuzz.yml) |
-| pbnjam | [![Picofuzz: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-picofuzz.yml) |
-| javajam | [![Picofuzz: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-picofuzz.yml) |
-| jamforge | [![Picofuzz: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-picofuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-picofuzz.yml) |
+| typeberry | [![Performance: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-performance.yml) |
+| pyjamaz | [![Performance: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-performance.yml) |
+| boka | [![Performance: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-performance.yml) |
+| turbojam | [![Performance: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-performance.yml) |
+| graymatter | [![Performance: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-performance.yml) |
+| jam4s | [![Performance: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-performance.yml) |
+| pbnjam | [![Performance: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-performance.yml) |
+| javajam | [![Performance: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-performance.yml) |
+| jamforge | [![Performance: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-performance.yml) |
 
 ## How it works
 
 1. A **reusable GitHub Actions workflow** pulls your Docker image, starts it
    with a shared Unix socket volume, and runs tests against it.
-2. **Minifuzz** runs first as a gate — it replays pre-constructed fuzz protocol
-   examples (forks and no_forks) and validates that the implementation returns
-   correct responses. If minifuzz fails, picofuzz is skipped entirely.
-3. **Picofuzz** sends STF traces to the implementation and collects per-trace
-   timing statistics (it does not verify responses).
-4. Each team has its own workflow file (e.g. `typeberry-picofuzz.yml`) that
+2. **Minifuzz** runs first as a gate. It has two stages:
+   - **Bare-minimum examples** (`forks`, `no_forks`) — validates protocol basics.
+   - **STF conformance** (`fallback`, `safrole`, `storage`, `storage_light`) —
+     replays pre-captured request-response pairs and checks that the
+     implementation returns the expected responses.
+   If any minifuzz suite fails, picofuzz is skipped entirely.
+3. **Picofuzz** runs the same four STF suites and collects per-trace timing
+   statistics (it does not verify responses).
+4. Each team has its own workflow file (e.g. `typeberry-performance.yml`) that
    passes team-specific config (image, command, env vars, memory) to the
    reusable workflow.
 5. Tests run on a self-hosted runner. Timing results (CSV with per-trace
@@ -67,10 +72,10 @@ connections on the Unix socket. Two modes are supported:
    [JAM Fuzz protocol](https://github.com/davxy/jam-conformance/tree/main/fuzz-proto).
    The image must be publicly pullable (or accessible to the runner).
 
-2. **Create a workflow file** at `.github/workflows/<team>-picofuzz.yml`:
+2. **Create a workflow file** at `.github/workflows/<team>-performance.yml`:
 
    ```yaml
-   name: "Picofuzz: myteam"
+   name: "Performance: myteam"
 
    on:
      schedule:
@@ -166,7 +171,7 @@ up-to-date.
 ```
 .github/workflows/
   reusable-picofuzz.yml       # Core reusable workflow (minifuzz + picofuzz)
-  <team>-picofuzz.yml         # Per-team workflow files
+  <team>-performance.yml      # Per-team workflow files
 minifuzz/                     # Minifuzz Docker image (Python fuzz example runner)
 minifuzz-traces/              # Captured request-response pairs from typeberry
   populate.sh                 # Script to regenerate traces

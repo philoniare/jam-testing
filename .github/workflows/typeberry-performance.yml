@@ -1,4 +1,4 @@
-name: "Picofuzz: typeberry"
+name: "Performance: typeberry"
 
 on:
   schedule:

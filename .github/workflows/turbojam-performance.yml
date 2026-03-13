@@ -1,4 +1,4 @@
-name: "Picofuzz: turbojam"
+name: "Performance: turbojam"
 
 on:
   schedule:

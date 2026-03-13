@@ -1,18 +1,18 @@
 name: Deploy Dashboard
 
 on:
-  # Run after any picofuzz workflow completes
+  # Run after any performance workflow completes
   workflow_run:
     workflows:
-      - "Picofuzz: typeberry"
-      - "Picofuzz: boka"
-      - "Picofuzz: graymatter"
-      - "Picofuzz: jam4s"
-      - "Picofuzz: jamforge"
-      - "Picofuzz: javajam"
-      - "Picofuzz: pbnjam"
-      - "Picofuzz: pyjamaz"
-      - "Picofuzz: turbojam"
+      - "Performance: typeberry"
+      - "Performance: boka"
+      - "Performance: graymatter"
+      - "Performance: jam4s"
+      - "Performance: jamforge"
+      - "Performance: javajam"
+      - "Performance: pbnjam"
+      - "Performance: pyjamaz"
+      - "Performance: turbojam"
     types: [completed]
   workflow_dispatch:
 

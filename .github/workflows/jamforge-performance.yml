@@ -1,4 +1,4 @@
-name: "Picofuzz: jamforge"
+name: "Performance: jamforge"
 
 on:
   schedule:

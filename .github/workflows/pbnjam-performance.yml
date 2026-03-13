@@ -1,4 +1,4 @@
-name: "Picofuzz: pbnjam"
+name: "Performance: pbnjam"
 
 on:
   schedule:
