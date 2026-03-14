@@ -13,6 +13,8 @@ on:
       - "Performance: pbnjam"
       - "Performance: pyjamaz"
       - "Performance: turbojam"
+      - "Performance: jamzilla"
+      - "Performance: jamzilla-int"
     types: [completed]
   workflow_dispatch:
 
