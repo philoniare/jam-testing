@@ -23,6 +23,11 @@ reviews:
         7. The Docker image reference looks like a public registry path (e.g. ghcr.io).
         8. The `docker_cmd` contains the `{TARGET_SOCK}` placeholder.
         9. No extra jobs or steps are added beyond `uses: ./.github/workflows/reusable-picofuzz.yml`.
+        10. The Docker image must be publicly accessible (no authentication required).
+            Check that the image reference points to a public ghcr.io or Docker Hub
+            repository. If the image is under a private org or user namespace, flag it
+            as a potential issue — the workflow will fail with "unauthorized" at runtime
+            if the image cannot be pulled without credentials.
 
     # --- Dashboard deploy workflow ---
     - path: ".github/workflows/deploy-dashboard.yml"
