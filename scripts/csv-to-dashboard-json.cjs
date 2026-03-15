@@ -48,7 +48,7 @@ function csvRowToJson(row, targetName) {
     info: {
       name: targetName,
       app_version: { major: appVersion[0], minor: appVersion[1], patch: appVersion[2] },
-      jam_version: { major: 0, minor: 5, patch: 0 },
+      jam_version: { major: 0, minor: 7, patch: 2 },
     },
     stats: {
       steps: parseInt(row.count, 10),
@@ -71,7 +71,7 @@ function makePlaceholderJson(targetName) {
     info: {
       name: targetName,
       app_version: { major: 0, minor: 0, patch: 0 },
-      jam_version: { major: 0, minor: 5, patch: 0 },
+      jam_version: { major: 0, minor: 7, patch: 2 },
     },
     stats: {
       steps: 0,
@@ -90,7 +90,7 @@ function makePlaceholderJson(targetName) {
 }
 
 function main() {
-  const [,, artifactsDir, outputDir, jamVersion = '0.5.0'] = process.argv;
+  const [,, artifactsDir, outputDir, jamVersion = '0.7.2'] = process.argv;
 
   if (!artifactsDir || !outputDir) {
     console.error('Usage: csv-to-dashboard-json.js <artifacts-dir> <output-dir> [jam-version]');
