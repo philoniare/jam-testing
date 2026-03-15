@@ -81,6 +81,30 @@ jobs:
         working-directory: dashboard
         run: npm run update-all-data
 
+      - name: Fetch existing history from Pages
+        run: |
+          REPO_NAME="${{ github.event.repository.name }}"
+          PAGES_URL="https://${{ github.repository_owner }}.github.io/${REPO_NAME}/data/history.json"
+          echo "Fetching history from ${PAGES_URL}..."
+          curl -sfL "${PAGES_URL}" -o existing-history.json 2>/dev/null || echo '[]' > existing-history.json
+          echo "Existing history entries: $(cat existing-history.json | node -e 'let d="";process.stdin.on("data",c=>d+=c);process.stdin.on("end",()=>{try{console.log(JSON.parse(d).length)}catch{console.log(0)}})')"
+
+      - name: Append current data to history
+        run: |
+          node scripts/update-history.cjs \
+            existing-history.json \
+            dashboard/src/data/aggregated-data.json \
+            dashboard/public/data/history.json \
+            "${{ github.sha }}"
+
+      - name: Copy current data files for download
+        run: |
+          cp dashboard/src/data/aggregated-data.json dashboard/public/data/aggregated-data.json
+          cp dashboard/src/data/all-benchmarks-data.json dashboard/public/data/all-benchmarks-data.json
+
+      - name: Patch dashboard with download link
+        run: node scripts/patch-dashboard-download-link.cjs
+
       - name: Write source info
         working-directory: dashboard
         run: |
@@ -103,6 +127,7 @@ jobs:
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
           sed -i "s|/jam-conformance-dashboard|/${REPO_NAME}|g" next.config.ts
+          sed -i "s|/jam-conformance-dashboard|/${REPO_NAME}|g" src/config/app.ts
 
       - name: Build dashboard
         working-directory: dashboard

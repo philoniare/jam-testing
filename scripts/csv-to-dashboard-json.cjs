@@ -33,8 +33,8 @@ function parseRow(line) {
 
 const REQUIRED_BENCHMARKS = ['safrole', 'fallback', 'storage', 'storage_light'];
 
-// Large penalty value (ms) for missing benchmarks so teams still appear in the UI
-const MISSING_BENCHMARK_MS = 999_999;
+// Default value (ms) for missing benchmarks so teams still appear in the UI
+const MISSING_BENCHMARK_MS = 0;
 
 function csvRowToJson(row, targetName) {
   // Extract version from peer string like "@typeberry/jam@0.5.9"
