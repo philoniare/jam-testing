@@ -15,56 +15,30 @@ and the suite runs two stages against it:
   only purpose is to measure block import performance (timings are displayed
   on the [dashboard](#dashboard)).
 
-## Minifuzz + Performance
+## Status
 
-| Team | Status |
-|------|--------|
-| typeberry | [![Performance: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-performance.yml) |
-| pyjamaz | [![Performance: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-performance.yml) |
-| boka | [![Performance: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-performance.yml) |
-| turbojam | [![Performance: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-performance.yml) |
-| graymatter | [![Performance: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-performance.yml) |
-| jam4s | [![Performance: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-performance.yml) |
-| pbnjam | [![Performance: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-performance.yml) |
-| javajam | [![Performance: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-performance.yml) |
-| jamforge | [![Performance: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-performance.yml) |
-| jotl | [![Performance: jotl](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-performance.yml) |
-| jamzilla | [![Performance: jamzilla](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-performance.yml) |
-| jamzilla-int | [![Performance: jamzilla-int](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-performance.yml) |
-| jampy | [![Performance: jampy](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-performance.yml) |
-| new-jamneration | [![Performance: new-jamneration](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-performance.yml) |
+The **Performance** column covers minifuzz (conformance gate) + picofuzz
+(timing). The **Fuzz** column covers demo fuzz testing where
+[graymatter](https://github.com/jambrains/graymatter) generates random blocks
+and the target must process them without crashing (5 000 blocks on a shared
+runner — no setup required).
 
-## Fuzzing
-
-In addition to the deterministic minifuzz/picofuzz suites, the repo supports
-**fuzz testing** where one implementation (the "source") generates random blocks
-and another (the "target") must process them without crashing.
-
-Currently, [graymatter](https://github.com/jambrains/graymatter) is available as
-a fuzz source.
-
-### Demo fuzzing (free tier)
-
-Every team automatically gets a **demo fuzz** job that runs graymatter against
-their implementation with a limited number of blocks (5 000) on a shared demo
-runner. This is a basic sanity check — no setup required.
-
-| Team | Status |
-|------|--------|
-| typeberry | [![Fuzz: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-fuzz.yml) |
-| pyjamaz | [![Fuzz: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-fuzz.yml) |
-| boka | [![Fuzz: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-fuzz.yml) |
-| turbojam | [![Fuzz: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-fuzz.yml) |
-| graymatter | [![Fuzz: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-fuzz.yml) |
-| jam4s | [![Fuzz: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-fuzz.yml) |
-| pbnjam | [![Fuzz: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-fuzz.yml) |
-| javajam | [![Fuzz: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-fuzz.yml) |
-| jamforge | [![Fuzz: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-fuzz.yml) |
-| jotl | [![Fuzz: jotl](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-fuzz.yml) |
-| jamzilla | [![Fuzz: jamzilla](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-fuzz.yml) |
-| jamzilla-int | [![Fuzz: jamzilla-int](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-fuzz.yml) |
-| jampy | [![Fuzz: jampy](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-fuzz.yml) |
-| new-jamneration | [![Fuzz: new-jamneration](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-fuzz.yml) |
+| Team | Performance | Fuzz |
+|------|-------------|------|
+| typeberry | [![Performance: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-performance.yml) | [![Fuzz: typeberry](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/typeberry-fuzz.yml) |
+| pyjamaz | [![Performance: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-performance.yml) | [![Fuzz: pyjamaz](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pyjamaz-fuzz.yml) |
+| boka | [![Performance: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-performance.yml) | [![Fuzz: boka](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/boka-fuzz.yml) |
+| turbojam | [![Performance: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-performance.yml) | [![Fuzz: turbojam](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/turbojam-fuzz.yml) |
+| graymatter | [![Performance: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-performance.yml) | [![Fuzz: graymatter](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/graymatter-fuzz.yml) |
+| jam4s | [![Performance: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-performance.yml) | [![Fuzz: jam4s](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jam4s-fuzz.yml) |
+| pbnjam | [![Performance: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-performance.yml) | [![Fuzz: pbnjam](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/pbnjam-fuzz.yml) |
+| javajam | [![Performance: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-performance.yml) | [![Fuzz: javajam](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/javajam-fuzz.yml) |
+| jamforge | [![Performance: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-performance.yml) | [![Fuzz: jamforge](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamforge-fuzz.yml) |
+| jotl | [![Performance: jotl](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-performance.yml) | [![Fuzz: jotl](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jotl-fuzz.yml) |
+| jamzilla | [![Performance: jamzilla](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-performance.yml) | [![Fuzz: jamzilla](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-fuzz.yml) |
+| jamzilla-int | [![Performance: jamzilla-int](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-performance.yml) | [![Fuzz: jamzilla-int](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jamzilla-int-fuzz.yml) |
+| jampy | [![Performance: jampy](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-performance.yml) | [![Fuzz: jampy](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/jampy-fuzz.yml) |
+| new-jamneration | [![Performance: new-jamneration](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-performance.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-performance.yml) | [![Fuzz: new-jamneration](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-fuzz.yml/badge.svg)](https://github.com/FluffyLabs/jam-testing/actions/workflows/new-jamneration-fuzz.yml) |
 
 ### Long-running fuzzing (dedicated)
 
