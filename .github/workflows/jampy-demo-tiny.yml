@@ -1,4 +1,4 @@
-name: "Fuzz: jampy-recompiler"
+name: "Demo (tiny): jampy"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/jampy-recompiler-fuzz.yml'
+      - '.github/workflows/jampy-demo-tiny.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -16,7 +17,8 @@ jobs:
   demo:
     uses: ./.github/workflows/demo-source.yml
     with:
-      target_name: jampy-recompiler
+      target_name: jampy
       docker_image: 'ghcr.io/dakk/jampy-target:0.7.2'
-      docker_cmd: '--use-recompiler --sock {TARGET_SOCK}'
+      docker_cmd: '--sock {TARGET_SOCK}'
+      spec: tiny
       mention: dakk

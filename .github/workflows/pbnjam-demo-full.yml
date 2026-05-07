@@ -1,4 +1,4 @@
-name: "Fuzz: pbnjam"
+name: "Demo (full): pbnjam"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/pbnjam-fuzz.yml'
+      - '.github/workflows/pbnjam-demo-full.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -18,6 +19,7 @@ jobs:
     with:
       target_name: pbnjam
       docker_image: 'shimonchick/pbnjam-fuzzer-target:latest'
-      docker_cmd: '--socket {TARGET_SOCK}'
       docker_memory: '4096m'
+      spec: full
+      num_blocks: 500
       mention: mikirov

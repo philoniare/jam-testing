@@ -1,4 +1,4 @@
-name: "Fuzz: boka"
+name: "Demo (tiny): boka"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/boka-fuzz.yml'
+      - '.github/workflows/boka-demo-tiny.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -19,4 +20,5 @@ jobs:
       target_name: boka
       docker_image: 'acala/boka:latest'
       docker_cmd: 'fuzz target --socket-path {TARGET_SOCK}'
+      spec: tiny
       mention: xlc

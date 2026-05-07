@@ -1,4 +1,4 @@
-name: "Fuzz: pyjamaz"
+name: "Demo (full): pyjamaz"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/pyjamaz-fuzz.yml'
+      - '.github/workflows/pyjamaz-demo-full.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -18,5 +19,6 @@ jobs:
     with:
       target_name: pyjamaz
       docker_image: 'jamdottech/pyjamaz:latest'
-      docker_cmd: 'fuzzer target --db-path=/tmp/pyjamaz_fuzzer_db --socket-path={TARGET_SOCK}'
+      spec: full
+      num_blocks: 500
       mention: emielsebastiaan

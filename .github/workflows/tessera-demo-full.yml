@@ -1,4 +1,4 @@
-name: "Fuzz: tessera"
+name: "Demo (full): tessera"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/tessera-fuzz.yml'
+      - '.github/workflows/tessera-demo-full.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -18,4 +19,6 @@ jobs:
     with:
       target_name: tessera
       docker_image: 'ghcr.io/chainscore/tessera:latest'
+      spec: full
+      num_blocks: 500
       mention: prasad-kumkar

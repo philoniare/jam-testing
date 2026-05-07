@@ -1,4 +1,4 @@
-name: "Fuzz: javajam"
+name: "Demo (tiny): javajam"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/javajam-fuzz.yml'
+      - '.github/workflows/javajam-demo-tiny.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -20,4 +21,5 @@ jobs:
       docker_image: 'ghcr.io/methodfive/javajam:latest-amd64'
       docker_cmd: '-Dskip.warmup=true fuzz {TARGET_SOCK}'
       docker_memory: '8192m'
+      spec: tiny
       mention: jaymansfield

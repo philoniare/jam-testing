@@ -1,4 +1,4 @@
-name: "Fuzz: tsjam"
+name: "Demo (full): tsjam"
 
 on:
   schedule:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '.github/workflows/tsjam-fuzz.yml'
+      - '.github/workflows/tsjam-demo-full.yml'
+      - '.github/workflows/demo-source.yml'
 
 permissions:
   contents: read
@@ -18,4 +19,6 @@ jobs:
     with:
       target_name: tsjam
       docker_image: 'ghcr.io/vekexasia/tsjam-target:0.7.2'
+      spec: full
+      num_blocks: 500
       mention: vekexasia

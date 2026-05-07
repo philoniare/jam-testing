@@ -12,24 +12,23 @@ permissions:
 
 jobs:
   graymatter-source:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - spec: tiny
+            num_blocks: 5000
+          - spec: full
+            num_blocks: 500
     uses: ./.github/workflows/graymatter-fuzz-source.yml
     with:
       target_name: typeberry
       docker_image: 'ghcr.io/fluffylabs/typeberry:latest'
-      docker_cmd: '--version=1 fuzz-target {TARGET_SOCK}'
+      docker_cmd: ''
       docker_env: 'JAM_LOG=log'
       readiness_pattern: 'PVM Backend'
+      spec: ${{ matrix.spec }}
       timeout_minutes: 30
-      num_blocks: 10000
+      num_blocks: ${{ matrix.num_blocks }}
       num_runs: 9
-      mention: tomusdrw
-
-  demo:
-    uses: ./.github/workflows/demo-source.yml
-    with:
-      target_name: typeberry
-      docker_image: 'ghcr.io/fluffylabs/typeberry:latest'
-      docker_cmd: '--version=1 fuzz-target {TARGET_SOCK}'
-      docker_env: 'JAM_LOG=log'
-      readiness_pattern: 'PVM Backend'
       mention: tomusdrw
