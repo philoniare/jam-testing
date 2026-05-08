@@ -19,7 +19,7 @@ jobs:
     with:
       target_name: jam4s
       docker_image: 'jamforscala/jam4s:latest'
-      docker_memory: '4096m'
+      docker_memory: '8192m'
       spec: full
       num_blocks: 500
       mention: celadari
