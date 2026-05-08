@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/demo-source.yml
     with:
       target_name: vinwolf
-      docker_image: 'ghcr.io/bloppan/vinwolf:latest'
+      docker_image: 'ghcr.io/bloppan/vinwolf-target:latest'
       docker_memory: '8192m'
       readiness_pattern: 'listening on'
       spec: full

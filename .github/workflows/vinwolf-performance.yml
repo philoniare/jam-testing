@@ -13,6 +13,5 @@ jobs:
     uses: ./.github/workflows/reusable-picofuzz.yml
     with:
       target_name: vinwolf
-      docker_image: 'ghcr.io/bloppan/vinwolf:latest'
-      docker_cmd: '--fuzz {TARGET_SOCK}'
+      docker_image: 'ghcr.io/bloppan/vinwolf-target:latest'
       readiness_pattern: 'listening on'

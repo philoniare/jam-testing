@@ -18,8 +18,7 @@ jobs:
     uses: ./.github/workflows/demo-source.yml
     with:
       target_name: vinwolf
-      docker_image: 'ghcr.io/bloppan/vinwolf:latest'
-      docker_cmd: '--fuzz {TARGET_SOCK}'
+      docker_image: 'ghcr.io/bloppan/vinwolf-target:latest'
       readiness_pattern: 'listening on'
       spec: tiny
       mention: bloppan
