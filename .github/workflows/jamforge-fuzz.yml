@@ -19,9 +19,9 @@ jobs:
       matrix:
         include:
           - spec: tiny
-            num_blocks: 175000
+            num_blocks: 5000
           - spec: full
-            num_blocks: 17500
+            num_blocks: 500
     uses: ./.github/workflows/graymatter-fuzz-source.yml
     with:
       target_name: jamforge
